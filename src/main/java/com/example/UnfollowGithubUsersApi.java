@@ -16,11 +16,13 @@ abstract class UnfollowGithubUsersApi {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private final String accessToken = "";
-    protected final String username = "";
+    private final String accessToken;
+    protected final String username;
     protected final String GITHUB_API_BASE_URL = "https://api.github.com";
 
-    public UnfollowGithubUsersApi() {
+    public UnfollowGithubUsersApi(String username, String accessToken) {
+        this.username = username;
+        this.accessToken = accessToken;
         httpClient = HttpClient.newHttpClient();
         objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);

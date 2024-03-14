@@ -8,6 +8,10 @@ class UnfollowGithubUserConnection extends UnfollowGithubUsersApi {
 
     private static final Logger logger = Logger.getLogger(UnsupportedClassVersionError.class.getName());
 
+    public UnfollowGithubUserConnection(String username, String accessToken) {
+        super(username, accessToken);
+    }
+
 
     @Override
     public void unfollowUsersNotFollowingBack() {
@@ -18,17 +22,19 @@ class UnfollowGithubUserConnection extends UnfollowGithubUsersApi {
 
         List<Github> usersNotFollowingBack = new ArrayList<>(following);
 
-        usersNotFollowingBack.removeIf(user -> followers.stream().anyMatch(follower -> follower.getFollowers_url().equals(user.getFollowers_url())));
+        usersNotFollowingBack.removeIf(user -> followers.stream().anyMatch(follower -> follower.followers_url().equals(user.followers_url())));
 
         // Print the usernames of users not following you back
         if (!usersNotFollowingBack.isEmpty()) {
-            System.out.println("Users not following you back (: :");
-           int i = 0;
+            logger.info("Unfollowing users not following you back (: :");
+
+            int i = 0;
             for (Github user : usersNotFollowingBack) {
                 i++;
-                // unfollowUser(user);
+                unfollowUser(user);
             }
-            System.out.println(i);
+            //Gets the number of people not following you back
+            //System.out.println(i);
         } else {
             System.out.println("All users are following you back.");
         }
@@ -57,7 +63,6 @@ class UnfollowGithubUserConnection extends UnfollowGithubUsersApi {
         return allFollowing;
     }
 
-
     @Override
     public List<Github> getFollowers() {
 
@@ -82,10 +87,10 @@ class UnfollowGithubUserConnection extends UnfollowGithubUsersApi {
 
     }
 
-    private void unfollowUser(String user) {
-        String url = GITHUB_API_BASE_URL + "/user/following/" + user;
+    private void unfollowUser(Github user) {
+        String url = GITHUB_API_BASE_URL + "/user/following/" + user.login();
         sendDeleteRequest(url);
-        System.out.println("Unfollowed user: " + user);
+        System.out.println("Unfollowed user: " + user.login());
     }
 
 }
